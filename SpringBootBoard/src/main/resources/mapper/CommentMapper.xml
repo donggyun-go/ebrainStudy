@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.repository.CommentDao">
+    <select id="getCommentsByBoardSeq" resultType="com.study.dto.CommentDTO">
+        SELECT
+            *
+        FROM
+            tb_comment
+        WHERE
+            board_seq = #{seq}
+        ORDER BY
+            seq DESC
+    </select>
+    <insert id="createComment" parameterType="com.study.dto.CommentDTO">
+        INSERT INTO
+            tb_comment
+            (content,
+             create_date,
+             board_seq)
+        VALUES
+            (#{content},
+             NOW(),
+             #{boardSeq})
+    </insert>
+</mapper>

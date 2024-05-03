@@ -1,0 +1,135 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.repository.BoardDao">
+    <select id="boardList" resultType="com.study.dto.BoardDTO">
+        SELECT
+            b.seq,
+            c.type AS categoryType,
+            b.title,
+            b.name,
+            b.content,
+            b.create_date AS createDate,
+            b.update_date AS updateDate,
+            b.view_cnt AS viewCnt
+        FROM tb_board b
+                 LEFT JOIN tb_category c ON b.category_seq = c.seq
+        ORDER BY b.seq DESC;
+    </select>
+    <insert id="createBoard" parameterType="com.study.dto.BoardDTO" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO
+            tb_board
+            (
+              category_seq,
+              title,
+              password,
+              content,
+              name,
+              create_date)
+        VALUES
+            (#{categorySeq},
+             #{title},
+             #{password},
+             #{content},
+             #{name},
+             NOW());
+    </insert>
+    <select id="findBoardBySeq" parameterType="int" resultType="com.study.dto.BoardDTO">
+        SELECT
+            b.seq,
+            c.type AS categoryType,
+            b.title,
+            b.name,
+            b.content,
+            b.create_date AS createDate,
+            b.update_date AS updateDate,
+            b.view_cnt AS viewCnt
+        FROM tb_board b
+                 LEFT JOIN tb_category c ON b.category_seq = c.seq
+        WHERE b.seq = #{seq}
+    </select>
+    <select id="countBoards" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            tb_board;
+    </select>
+    <select id="boardListPaging" resultType="com.study.dto.BoardDTO">
+        SELECT
+            b.seq,
+            c.type AS categoryType,
+            b.title,
+            b.name,
+            b.content,
+            b.create_date AS createDate,
+            b.update_date AS updateDate,
+            b.view_cnt AS viewCnt
+        FROM tb_board b
+                 LEFT JOIN tb_category c ON b.category_seq = c.seq
+        ORDER BY b.seq DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countBoardsBySearch" parameterType="com.study.dto.PagingDTO" resultType="int">
+    SELECT COUNT(*)
+    FROM tb_board
+    WHERE 1=1
+        <if test="searchType != null and keyword != null and keyword != ''">
+         (
+            <choose>
+                <when test="searchType == 'title'">
+                    AND  title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'name'">
+                    AND name LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    AND content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+            </choose>
+        )
+        </if>
+        <if test="startDate != null">
+            <![CDATA[ AND create_date >= #{startDate} ]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[ AND create_date <= #{endDate} ]]>
+        </if>
+    </select>
+
+
+    <select id="boardListPagingWithSearch" parameterType="com.study.dto.PagingDTO" resultType="com.study.dto.BoardDTO">
+        SELECT
+            b.seq,
+            c.type AS categoryType,
+            b.title,
+            b.name,
+            b.content,
+            b.create_date AS createDate,
+            b.update_date AS updateDate,
+            b.view_cnt AS viewCnt
+        FROM tb_board b
+        LEFT JOIN tb_category c ON b.category_seq = c.seq
+        WHERE 1=1
+        <if test="searchType != null and keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == 'title'">
+                    AND b.title LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'name'">
+                    AND b.name LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    AND b.content LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="startDate != null">
+            <![CDATA[AND b.create_date >= #{startDate}]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[AND b.create_date <= #{endDate}]]>
+        </if>
+        ORDER BY b.seq DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>

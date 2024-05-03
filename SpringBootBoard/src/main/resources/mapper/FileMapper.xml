@@ -1,0 +1,26 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.repository.FileDao">
+    <insert id="insertFile" parameterType="java.util.Map">
+        INSERT INTO
+            tb_file
+            (real_name,
+             save_name,
+             save_path,
+             create_date,
+             board_seq)
+        VALUES
+            (#{realName},
+             #{saveName},
+             #{savePath},
+             NOW(),
+             #{boardSeq})
+    </insert>
+    <select id="findFilesByBoardSeq" resultType="java.util.Map" parameterType="int">
+        SELECT
+            *
+        FROM
+            tb_file
+        WHERE
+            board_seq = #{boardSeq}
+    </select>
+</mapper>

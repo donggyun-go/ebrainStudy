@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug">
+
+    <Appenders>
+        <!-- 콘솔 앱펜더 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c{1} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <loggers>
+        <!-- MyBatis SQL 쿼리 로깅 설정 -->
+        <logger name="org.mybatis.spring.SqlSessionTemplate" level="debug"/>
+
+        <!-- MyBatis 로거 -->
+        <logger name="org.apache.ibatis" level="debug"/>
+
+        <!-- Spring MVC 및 REST 관련 로거 -->
+        <logger name="org.springframework.web" level="debug"/>
+
+        <!-- Spring Framework 로거 -->
+        <logger name="org.springframework" level="info"/>
+
+        <!-- 루트 로거 -->
+        <root level="info">
+            <AppenderRef ref="console"/>
+        </root>
+    </loggers>
+
+</configuration>
